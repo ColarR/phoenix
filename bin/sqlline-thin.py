@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: UTF-8 -*-
 ############################################################################
 #
 # Licensed to the Apache Software Foundation (ASF) under one
@@ -56,6 +57,9 @@ parser.add_argument('-s', '--serialization', help='Serialization type for HTTP A
 # Avatica authentication
 parser.add_argument('-au', '--auth-user', help='Username for HTTP authentication.')
 parser.add_argument('-ap', '--auth-password', help='Password for HTTP authentication.')
+# Phoenix Client 2.0用户名密码设置
+parser.add_argument('-u', '--username', help='Phoenix Client 2.0用户名')
+parser.add_argument('-p', '--password', help='Phoenix Client 2.0密码')
 # Common arguments across sqlline.py and sqlline-thin.py
 phoenix_utils.common_sqlline_args(parser)
 # Parse the args
@@ -66,6 +70,12 @@ phoenix_utils.setPath()
 url = args.url
 sqlfile = args.sqlfile
 serialization_key = 'phoenix.queryserver.serialization'
+username = 'none'
+password = 'none'
+if args.username is not None:
+    username = args.username
+if args.password is not None:
+    password = args.password
 
 def cleanup_url(url):
     parsed = urlparse.urlparse(url)
@@ -167,7 +177,7 @@ java_cmd = java + ' $PHOENIX_OPTS ' + \
     os.pathsep + phoenix_utils.hadoop_conf + os.pathsep + phoenix_utils.hadoop_classpath + '" -Dlog4j.configuration=file:' + \
     os.path.join(phoenix_utils.current_dir, "log4j.properties") + \
     " org.apache.phoenix.queryserver.client.SqllineWrapper -d org.apache.phoenix.queryserver.client.Driver " + \
-    ' -u "' + jdbc_url + '"' + " -n none -p none " + \
+    ' -u "' + jdbc_url + '"' + " -n " + username + " -p " + password + " " + \
     " --color=" + colorSetting + " --fastConnect=" + args.fastconnect + " --verbose=" + args.verbose + \
     " --incremental=false --isolation=TRANSACTION_READ_COMMITTED " + sqlfile
 

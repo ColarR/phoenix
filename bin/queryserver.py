@@ -119,16 +119,18 @@ out_file_path = os.path.join(log_dir, phoenix_out_file)
 #    " -XX:+UnlockCommercialFeatures -XX:+FlightRecorder -XX:FlightRecorderOptions=defaultrecording=true,dumponexit=true" + \
 
 # The command is run through subprocess so environment variables are automatically inherited
-java_cmd = '%(java)s -cp ' + hbase_config_path + os.pathsep + hadoop_config_path + os.pathsep + \
-    phoenix_utils.phoenix_client_jar + os.pathsep + phoenix_utils.phoenix_queryserver_jar + \
-    os.pathsep + hadoop_classpath + \
-    " -Dproc_phoenixserver" + \
-    " -Dlog4j.configuration=file:" + os.path.join(phoenix_utils.current_dir, "log4j.properties") + \
-    " -Dpsql.root.logger=%(root_logger)s" + \
-    " -Dpsql.log.dir=%(log_dir)s" + \
-    " -Dpsql.log.file=%(log_file)s" + \
-    " " + opts + \
-    " org.apache.phoenix.queryserver.server.QueryServer " + args
+java_cmd = '%(java)s -cp ' + \
+           phoenix_utils.current_dir + os.pathsep + \
+           hbase_config_path + os.pathsep + hadoop_config_path + os.pathsep + \
+           phoenix_utils.phoenix_client_jar + os.pathsep + phoenix_utils.phoenix_queryserver_jar + \
+           os.pathsep + hadoop_classpath + \
+           " -Dproc_phoenixserver" + \
+           " -Dlog4j.configuration=file:" + os.path.join(phoenix_utils.current_dir, "log4j.properties") + \
+           " -Dpsql.root.logger=%(root_logger)s" + \
+           " -Dpsql.log.dir=%(log_dir)s" + \
+           " -Dpsql.log.file=%(log_file)s" + \
+           " " + opts + \
+           " org.apache.phoenix.queryserver.server.QueryServer " + args
 
 if command == 'makeWinServiceDesc':
     cmd = java_cmd % {'java': java, 'root_logger': 'INFO,DRFA,console', 'log_dir': log_dir, 'log_file': phoenix_log_file}
